@@ -18,5 +18,5 @@ for i, (images, masks) in enumerate(loader):
     images = images.to(device)
     masks = masks.to(device)
     print(f"Batch {i}: images {images.shape}, masks {masks.shape}")
-    if i == 2:  # nur 3 Batches testen
+    if i == 2:  # nur 3 Batches test
         break
