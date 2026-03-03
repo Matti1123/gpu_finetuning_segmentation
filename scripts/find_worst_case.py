@@ -1,4 +1,5 @@
 import torch
+from tqdm import tqdm
 from torch.utils.data import DataLoader
 import segmentation_models_pytorch as smp
 import matplotlib.pyplot as plt
@@ -27,7 +28,13 @@ dataset = ISICDataset(
     "data/raw/masks_selected",
     img_size=(256, 256),
 )
-loader = DataLoader(dataset, batch_size=1, shuffle=False)
+loader = DataLoader(
+    dataset,
+    batch_size=1,
+    shuffle=False,
+    num_workers=4,      # ggf. 2, 4, 8 testen
+    pin_memory=True
+)
 
 def iou_from_logits(logits, targets, threshold=0.5, eps=1e-6):
     probs = torch.sigmoid(logits)
@@ -46,8 +53,10 @@ worst_image = None
 worst_mask = None
 worst_pred = None
 
-with torch.no_grad():
-    for i, (image, mask) in enumerate(loader):
+
+
+with torch.inference_mode():
+    for i, (image, mask) in tqdm(enumerate(loader), total=len(loader)):
         image = image.to(DEVICE)
         mask = mask.to(DEVICE)
 
