@@ -1,4 +1,5 @@
 import torch
+import os
 from tqdm import tqdm
 from torch.utils.data import DataLoader
 import segmentation_models_pytorch as smp
@@ -53,6 +54,7 @@ best_image = None
 best_mask = None
 best_pred = None
 
+best_index = -1
 
 
 with torch.inference_mode():
@@ -69,10 +71,16 @@ with torch.inference_mode():
         if iou > best_iou:
             best_iou = iou
             best_image = image.detach().cpu().clone()
+            best_index = i
             best_mask = mask.detach().cpu().clone()
             best_pred = pred.detach().cpu().clone()
 
+key = dataset.paired_keys[best_index]
+image_name = dataset.image_dict[key]
+image_path = os.path.join(dataset.images_dir, image_name)
+
 print("Beste IoU:", best_iou)
+print("Bestes Bild:", image_path)
 
 img_np = best_image[0].permute(1, 2, 0).numpy()
 mask_np = best_mask[0, 0].numpy()
