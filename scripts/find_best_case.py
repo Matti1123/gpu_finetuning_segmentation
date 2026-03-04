@@ -12,7 +12,7 @@ MODEL_PATH = "runs/exp_first/best.pt"
 
 model = smp.Unet(
     encoder_name="resnet34",
-    encoder_weights=None,  # wir laden eigene Gewichte
+    encoder_weights=None,  # wir laden eigene Gewichte, daher kein Pretraining
     in_channels=3,
     classes=1,
     activation=None,
