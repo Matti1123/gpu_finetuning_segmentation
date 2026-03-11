@@ -77,7 +77,7 @@ def main():
     ).to(device)
 
     # --- Transfer Learning: Encoder zuerst einfrieren
-    freeze_epochs = 10
+    freeze_epochs = 0  # wir lassen das Freezen weg
     set_encoder_trainable(model, trainable=False)
 
     # --- Loss + Optimizer
@@ -87,7 +87,7 @@ def main():
     scaler = torch.cuda.amp.GradScaler(enabled=(device.type == "cuda"))
 
     # --- Output
-    out_dir = "runs/exp_freeze_10"
+    out_dir = "runs/exp_no_freeze"  # da wir hier nicht einfrieren, anderer Ordner
     os.makedirs(out_dir, exist_ok=True)
     best_val_iou = -1.0
 
