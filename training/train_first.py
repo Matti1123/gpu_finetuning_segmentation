@@ -77,8 +77,8 @@ def main():
     ).to(device)
 
     # --- Transfer Learning: Encoder zuerst einfrieren
-    freeze_epochs = 0  # wir lassen das Freezen weg
-    set_encoder_trainable(model, trainable=False)
+    freeze_epochs = 1  # wir lassen das Freezen weg
+    set_encoder_trainable(model, trainable=True)  # wir lassen das Freezen weg
 
     # --- Loss + Optimizer
     bce = nn.BCEWithLogitsLoss()
