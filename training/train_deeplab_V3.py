@@ -98,7 +98,7 @@ def main():
         if epoch == freeze_epochs + 1:
             print(f"Unfreezing encoder ab Epoche {epoch}")
             set_encoder_trainable(model, trainable=True)
-            optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)  # kleinerer LR beim Unfreezen
+            optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)  #kleinerer LR beim Unfreezen
 
         # ---- TRAIN
         model.train()
