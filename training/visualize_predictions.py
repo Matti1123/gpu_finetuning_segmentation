@@ -11,7 +11,7 @@ from scripts.dataset import ISICDataset
 # ----------------------------
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 MODEL_PATH = "runs/exp_first/best.pt"
-NUM_IMAGES = 5  # wie viele Beispiele anzeigen
+NUM_IMAGES = 10  # wie viele Beispiele anzeigen
 
 # ----------------------------
 # Modell laden
