@@ -77,8 +77,8 @@ def main():
     ).to(device)
 
     # --- Transfer Learning: Encoder zuerst einfrieren
-    freeze_epochs = 1  # wir lassen das Freezen weg
-    set_encoder_trainable(model, trainable=True)  # wir lassen das Freezen weg
+    freeze_epochs = 5 # wir lassen das Freezen weg
+    set_encoder_trainable(model, trainable=False)  # wir lassen das Freezen weg
 
     # --- Loss + Optimizer
     bce = nn.BCEWithLogitsLoss()
@@ -87,7 +87,7 @@ def main():
     scaler = torch.cuda.amp.GradScaler(enabled=(device.type == "cuda"))
 
     # --- Output
-    out_dir = "runs/exp_no_freeze"  # da wir hier nicht einfrieren, anderer Ordner
+    out_dir = "runs/exp_0_3_BCE_dice_0_7"  # da wir hier nicht einfrieren, anderer Ordner
     os.makedirs(out_dir, exist_ok=True)
     best_val_iou = -1.0
 
@@ -113,7 +113,7 @@ def main():
 
             with torch.cuda.amp.autocast(enabled=(device.type == "cuda")):
                 logits = model(images)  # [B,1,H,W]
-                loss = 0.5 * bce(logits, masks) + 0.5 * dice_loss_from_logits(logits, masks)
+                loss = 0.3 * bce(logits, masks) + 0.7 * dice_loss_from_logits(logits, masks)
 
             scaler.scale(loss).backward()
             scaler.step(optimizer)
@@ -136,7 +136,7 @@ def main():
                 masks  = masks.to(device, non_blocking=True)
 
                 logits = model(images)
-                loss = 0.5 * bce(logits, masks) + 0.5 * dice_loss_from_logits(logits, masks)
+                loss = 0.3 * bce(logits, masks) + 0.7 * dice_loss_from_logits(logits, masks)
 
                 val_loss += loss.item()
                 val_iou  += iou_from_logits(logits, masks)
