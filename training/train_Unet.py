@@ -155,7 +155,7 @@ def main():
                 "optimizer_state": optimizer.state_dict(),
                 "best_val_iou": best_val_iou,
             }, ckpt_path)
-            print(f"✅ Bestes Modell gespeichert: {ckpt_path} (val_iou={best_val_iou:.4f})")
+            print(f"Bestes Modell gespeichert: {ckpt_path} (val_iou={best_val_iou:.4f})")
 
 if __name__ == "__main__":
     main()

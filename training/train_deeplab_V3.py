@@ -8,9 +8,8 @@ from tqdm import tqdm
 import segmentation_models_pytorch as smp
 from scripts.dataset import ISICDataset
 
-# ---------------------------
 # Metrics / Loss
-# ---------------------------
+
 def dice_loss_from_logits(logits, targets, eps=1e-6):
     """
     Dice Loss für binäre Segmentierung.
@@ -44,9 +43,8 @@ def set_encoder_trainable(model, trainable: bool):
     for p in model.encoder.parameters():
         p.requires_grad = trainable
 
-# ---------------------------
 # Training
-# ---------------------------
+
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("Using device:", device)
@@ -67,7 +65,7 @@ def main():
     train_loader = DataLoader(train_ds, batch_size=8, shuffle=True, num_workers=2, pin_memory=True)
     val_loader   = DataLoader(val_ds, batch_size=8, shuffle=False, num_workers=2, pin_memory=True)
 
-    # --- Modell: U-Net mit pretrained Encoder (Transfer Learning)
+    # Modell: U-Net mit pretrained Encoder (Transfer Learning)
     model = smp.DeepLabV3Plus(
         encoder_name="resnet34",
         encoder_weights="imagenet",
@@ -76,7 +74,7 @@ def main():
         activation=None,  # wir arbeiten mit LOGITS
     ).to(device)
 
-    # --- Transfer Learning: Encoder zuerst einfrieren
+    # Transfer Learning: Encoder zuerst einfrieren
     freeze_epochs = 5 # wir lassen das Freezen weg
     set_encoder_trainable(model, trainable=False)  # wir lassen das Freezen weg
 
@@ -100,7 +98,8 @@ def main():
             set_encoder_trainable(model, trainable=True)
             optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)  #kleinerer LR beim Unfreezen
 
-        # ---- TRAIN
+        #  TRAIN
+
         model.train()
         train_loss = 0.0
         train_iou = 0.0
@@ -156,7 +155,7 @@ def main():
                 "optimizer_state": optimizer.state_dict(),
                 "best_val_iou": best_val_iou,
             }, ckpt_path)
-            print(f"✅ Bestes Modell gespeichert: {ckpt_path} (val_iou={best_val_iou:.4f})")
+            print(f"Bestes Modell gespeichert: {ckpt_path} (val_iou={best_val_iou:.4f})")
 
 if __name__ == "__main__":
     main()
