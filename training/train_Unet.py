@@ -73,11 +73,13 @@ def main():
         encoder_weights="imagenet",
         in_channels=3,
         classes=1,
-        activation=None,  # wir arbeiten mit LOGITS
+        activation=None, 
     ).to(device)
 
-    # --- Transfer Learning: Encoder zuerst einfrieren
-    freeze_epochs = 5 # wir lassen das Freezen weg
+
+
+    # Transfer Learning: Encoder zuerst einfrieren
+    freeze_epochs = 5 # wirab der 5 Epoche wird der Encoder mittrainiert (geunfreezt)
     set_encoder_trainable(model, trainable=False)  # wir lassen das Freezen weg
 
     # --- Loss + Optimizer
