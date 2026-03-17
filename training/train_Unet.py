@@ -8,9 +8,8 @@ from tqdm import tqdm
 import segmentation_models_pytorch as smp
 from scripts.dataset import ISICDataset
 
-# ---------------------------
 # Metrics / Loss
-# ---------------------------
+
 def dice_loss_from_logits(logits, targets, eps=1e-6):
     """
     Dice Loss für binäre Segmentierung.
@@ -44,9 +43,7 @@ def set_encoder_trainable(model, trainable: bool):
     for p in model.encoder.parameters():
         p.requires_grad = trainable
 
-# ---------------------------
 # Training
-# ---------------------------
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("Using device:", device)
