@@ -6,44 +6,21 @@ from torch.utils.data import DataLoader, random_split
 from tqdm import tqdm
 
 import segmentation_models_pytorch as smp
+from models.U_net_resnet34 import build_unet_resnet34
 from scripts.dataset import ISICDataset
+from scripts.losses import BCEDiceLoss
+from scripts.losses import dice_loss_from_logits
+from scripts.metrics import iou_from_logits, dice_score_from_logits
+
 
 # Metrics / Loss
-
-def dice_loss_from_logits(logits, targets, eps=1e-6):
-    """
-    Dice Loss für binäre Segmentierung.
-    logits: [B,1,H,W] (roh, ohne Sigmoid)
-    targets: [B,1,H,W] (0/1)
-    """
-    probs = torch.sigmoid(logits)
-    probs = probs.view(probs.size(0), -1)
-    targets = targets.view(targets.size(0), -1)
-
-    intersection = (probs * targets).sum(dim=1)
-    union = probs.sum(dim=1) + targets.sum(dim=1)
-    dice = (2 * intersection + eps) / (union + eps)
-    return 1 - dice.mean()
-
-@torch.no_grad()
-def iou_from_logits(logits, targets, threshold=0.5, eps=1e-6):
-    probs = torch.sigmoid(logits)
-    preds = (probs > threshold).float()
-
-    preds = preds.view(preds.size(0), -1)
-    targets = targets.view(targets.size(0), -1)
-
-    intersection = (preds * targets).sum(dim=1)
-    union = preds.sum(dim=1) + targets.sum(dim=1) - intersection
-    iou = (intersection + eps) / (union + eps)
-    return float(iou.mean().item())
 
 def set_encoder_trainable(model, trainable: bool):
     # smp.Unet hat model.encoder
     for p in model.encoder.parameters():
         p.requires_grad = trainable
 
-# Training
+# Training 123
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("Using device:", device)
@@ -65,13 +42,7 @@ def main():
     val_loader   = DataLoader(val_ds, batch_size=8, shuffle=False, num_workers=2, pin_memory=True)
 
     # --- Modell: U-Net mit pretrained Encoder (Transfer Learning)
-    model = smp.Unet(
-        encoder_name="resnet34",
-        encoder_weights="imagenet",
-        in_channels=3,
-        classes=1,
-        activation=None, 
-    ).to(device)
+    model = build_unet_resnet34(encoder_weights="imagenet").to(device)
 
 
 
@@ -80,7 +51,7 @@ def main():
     set_encoder_trainable(model, trainable=False)  # wir lassen das Freezen weg
 
     # --- Loss + Optimizer
-    bce = nn.BCEWithLogitsLoss()
+    criterion = BCEDiceLoss(bce_weight=0.3, dice_weight=0.7)
     optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=1e-3)
 
     scaler = torch.cuda.amp.GradScaler(enabled=(device.type == "cuda"))
@@ -112,7 +83,7 @@ def main():
 
             with torch.cuda.amp.autocast(enabled=(device.type == "cuda")):
                 logits = model(images)  # [B,1,H,W]
-                loss = 0.3 * bce(logits, masks) + 0.7 * dice_loss_from_logits(logits, masks)
+                loss = criterion(logits, masks)
 
             scaler.scale(loss).backward()
             scaler.step(optimizer)
@@ -135,7 +106,7 @@ def main():
                 masks  = masks.to(device, non_blocking=True)
 
                 logits = model(images)
-                loss = 0.3 * bce(logits, masks) + 0.7 * dice_loss_from_logits(logits, masks)
+                loss = criterion(logits, masks)
 
                 val_loss += loss.item()
                 val_iou  += iou_from_logits(logits, masks)
