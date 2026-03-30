@@ -13,7 +13,7 @@ from scripts.losses import dice_loss_from_logits
 from scripts.metrics import iou_from_logits, dice_score_from_logits
 
 
-# Metrics / Loss
+# Metrics / Loss 124
 
 def set_encoder_trainable(model, trainable: bool):
     # smp.Unet hat model.encoder
