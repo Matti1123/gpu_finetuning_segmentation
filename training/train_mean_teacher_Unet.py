@@ -87,13 +87,13 @@ def main():
     batch_size_unlabeled = 10
     num_workers = 2
 
-    epochs = 20
+    epochs = 15
     lr = 1e-4
     ema_decay = 0.99
 
-    unsup_weight_max = 0.5
-    rampup_epochs = 8
-    confidence_threshold = 0.7
+    unsup_weight_max = 0.1
+    rampup_epochs = 12
+    confidence_threshold = 0.8
 
     out_dir = "runs/mean_teacher_unet_20pct"
     os.makedirs(out_dir, exist_ok=True)
