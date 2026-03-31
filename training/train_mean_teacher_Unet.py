@@ -163,9 +163,8 @@ def main():
         pin_memory=True,
     )
 
-    # -------------------------
     # Student + Teacher
-    # -------------------------
+
     student_model = build_unet_resnet34().to(device)
     teacher_model = build_unet_resnet34().to(device)
 
