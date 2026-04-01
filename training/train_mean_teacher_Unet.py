@@ -87,7 +87,7 @@ def main():
     batch_size_unlabeled = 10
     num_workers = 2
 
-    epochs = 15
+    epochs = 25
     lr = 1e-4
     ema_decay = 0.99
 
