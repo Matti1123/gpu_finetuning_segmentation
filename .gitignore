@@ -13,7 +13,7 @@ data/raw/
 data/processed/
 
 # Models / Checkpoints
-models/
+runs/
 *.pt
 *.pth
 
