@@ -95,7 +95,7 @@ def main():
     rampup_epochs = 12
     confidence_threshold = 0.8
 
-    out_dir = "runs/mean_teacher_unet_20pct"
+    out_dir = "runs/mean_teacher_unet_25_epochs"
     os.makedirs(out_dir, exist_ok=True)
 
     # -------------------------
