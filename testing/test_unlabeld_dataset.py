@@ -59,7 +59,6 @@ def show_sample(sample, mask=None):
     plt.tight_layout()
     plt.savefig("testing/sample.png",)      
 
-
 # --------------------------------------------------
 # MAIN
 # --------------------------------------------------
