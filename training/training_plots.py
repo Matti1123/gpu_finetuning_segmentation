@@ -19,7 +19,7 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("Using device:", device)
 
-    # --- Daten
+    # Daten
     dataset = ISICDataset(
         "data/raw/images",
         "data/raw/masks_selected",
@@ -39,7 +39,7 @@ def main():
         val_ds, batch_size=8, shuffle=False, num_workers=2, pin_memory=True
     )
 
-    # --- Modell
+    # Modell
     model = build_unet_resnet34(encoder_weights="imagenet").to(device)
 
     # --- Transfer Learning
@@ -54,7 +54,7 @@ def main():
 
     scaler = torch.cuda.amp.GradScaler(enabled=(device.type == "cuda"))
 
-    # --- Plot-Ausgabeordner
+    # Plot-Ausgabeordner
     results_dir = "results/supervised_training"
     os.makedirs(results_dir, exist_ok=True)
 
@@ -72,7 +72,7 @@ def main():
             set_encoder_trainable(model, trainable=True)
             optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
 
-        # ---- TRAIN
+        # TRAIN
         model.train()
         train_loss = 0.0
         train_iou = 0.0
@@ -97,7 +97,7 @@ def main():
         train_loss /= max(1, len(train_loader))
         train_iou /= max(1, len(train_loader))
 
-        # ---- VALIDIERUNG
+        # VALIDIERUNG
         model.eval()
         val_loss = 0.0
         val_iou = 0.0
@@ -116,7 +116,7 @@ def main():
         val_loss /= max(1, len(val_loader))
         val_iou /= max(1, len(val_loader))
 
-        # --- Historie speichern
+        # Historie speichern
         epoch_history.append(epoch)
         train_iou_history.append(train_iou)
         val_iou_history.append(val_iou)
@@ -127,7 +127,7 @@ def main():
             f"val_loss={val_loss:.4f} val_iou={val_iou:.4f}"
         )
 
-    # --- Plot erstellen
+    # Plot erstellen
     plt.figure(figsize=(8, 5))
     plt.plot(
         epoch_history,
