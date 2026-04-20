@@ -1,0 +1,12 @@
+device=cuda
+img_size=(256, 256)
+batch_size=8
+val_ratio=0.2
+num_workers=2
+epochs=15
+freeze_epochs=5
+lr_phase1=0.001
+lr_phase2=0.0005
+bce_weight=0.3
+dice_weight=0.7
+encoder_weights=imagenet
