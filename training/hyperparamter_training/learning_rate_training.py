@@ -88,7 +88,7 @@ def main():
     batch_size = 8
     val_ratio = 0.2
     num_workers = 2
-    epochs = 20
+    epochs = 15
 
     freeze_epochs = 5
     lr_phase1 = 1e-3
