@@ -63,14 +63,14 @@ def main():
     val_iou_history = []
     epoch_history = []
 
-    epochs = 20
+    epochs = 15
     for epoch in range(1, epochs + 1):
 
         # Encoder nach freeze_epochs unfreezen
         if epoch == freeze_epochs + 1:
             print(f"Unfreezing encoder ab Epoche {epoch}")
             set_encoder_trainable(model, trainable=True)
-            optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
+            optimizer = torch.optim.AdamW(model.parameters(), lr=5e-4)
 
         # TRAIN
         model.train()
