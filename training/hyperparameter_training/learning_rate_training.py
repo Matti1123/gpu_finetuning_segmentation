@@ -90,7 +90,7 @@ def main():
     num_workers = 2
     epochs = 15
 
-    freeze_epochs = 5
+    freeze_epochs = 3
     lr_phase1 = 1e-3
     lr_phase2 = 2e-4
 
