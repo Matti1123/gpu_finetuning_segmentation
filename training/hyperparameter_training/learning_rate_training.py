@@ -92,7 +92,7 @@ def main():
 
     freeze_epochs = 5
     lr_phase1 = 1e-3
-    lr_phase2 = 1e-4
+    lr_phase2 = 2e-4
 
     bce_weight = 0.3
     dice_weight = 0.7
@@ -106,7 +106,7 @@ def main():
     os.makedirs(results_dir, exist_ok=True)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    run_name = f"run_{timestamp}_lr1e3_to_1e4_freeze{freeze_epochs}"
+    run_name = f"run_{timestamp}_lr1e3_to_2e4_freeze{freeze_epochs}"
     run_dir = os.path.join(results_dir, run_name)
     os.makedirs(run_dir, exist_ok=True)
 
