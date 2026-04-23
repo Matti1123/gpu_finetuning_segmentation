@@ -67,6 +67,10 @@ def build_splits(full_dataset, val_fraction=0.2, label_fraction=0.2, seed=42):
     return labeled_indices, unlabeled_indices, val_indices
 
 
+def set_encoder_trainable(model, trainable: bool):
+    for p in model.encoder.parameters():
+        p.requires_grad = trainable
+
 def save_config(run_dir, config_dict):
     config_path = os.path.join(run_dir, "config.txt")
     with open(config_path, "w", encoding="utf-8") as f:
@@ -186,7 +190,9 @@ def main():
     num_workers = 2
 
     epochs = 15
-    lr = 1e-4
+    freeze_epochs = 5
+    lr_phase1 = 1e-3
+    lr_phase2 = 5e-4
     ema_decay = 0.99
 
     unsup_weight_max = 0.1
@@ -247,7 +253,9 @@ def main():
         "batch_size_val": batch_size_val,
         "num_workers": num_workers,
         "epochs": epochs,
-        "lr": lr,
+        "freeze_epochs": freeze_epochs,
+        "lr_phase1": lr_phase1,
+        "lr_phase2": lr_phase2,
         "ema_decay": ema_decay,
         "unsup_weight_max": unsup_weight_max,
         "rampup_epochs": rampup_epochs,
@@ -309,6 +317,9 @@ def main():
 
     copy_student_to_teacher(student_model, teacher_model)
 
+    # Student-Encoder zunächst einfrieren
+    set_encoder_trainable(student_model, trainable=False)
+
     for p in teacher_model.parameters():
         p.requires_grad = False
 
@@ -318,10 +329,14 @@ def main():
     # Loss + Optimizer
     # -------------------------
     sup_criterion = BCEDiceLoss(bce_weight=bce_weight, dice_weight=dice_weight)
-    optimizer = torch.optim.AdamW(student_model.parameters(), lr=lr)
-    scaler = torch.cuda.amp.GradScaler(enabled=(device.type == "cuda"))
 
-    # -------------------------
+    optimizer = torch.optim.AdamW(
+        filter(lambda p: p.requires_grad, student_model.parameters()),
+        lr=lr_phase1
+    )
+
+    scaler = torch.cuda.amp.GradScaler(enabled=(device.type == "cuda"))
+        # -------------------------
     # Historie
     # -------------------------
     epoch_history = []
@@ -343,6 +358,12 @@ def main():
     # Training
     # -------------------------
     for epoch in range(1, epochs + 1):
+
+        if epoch == freeze_epochs + 1:
+            print(f"Unfreezing student encoder ab Epoche {epoch}")
+            set_encoder_trainable(student_model, trainable=True)
+            optimizer = torch.optim.AdamW(student_model.parameters(), lr=lr_phase2)
+
         student_model.train()
         teacher_model.eval()
 
