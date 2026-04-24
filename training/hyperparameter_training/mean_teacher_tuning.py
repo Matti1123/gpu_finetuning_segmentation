@@ -193,11 +193,11 @@ def main():
     freeze_epochs = 0
     lr_phase1 = 1e-3
     lr_phase2 = 5e-4
-    ema_decay = 0.99
+    ema_decay = 0.995
 
-    unsup_weight_max = 0.2
+    unsup_weight_max = 0.15
     rampup_epochs = 8
-    confidence_threshold = 0.7
+    confidence_threshold = 0.75
 
     bce_weight = 0.3
     dice_weight = 0.7

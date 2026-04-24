@@ -1,0 +1,10 @@
+best_epoch_teacher=25
+best_val_iou_teacher=0.785686
+final_train_total_loss=0.110105
+final_train_sup_loss=0.105720
+final_train_unsup_loss=0.029230
+final_train_iou=0.835565
+final_val_student_loss=0.163516
+final_val_student_iou=0.785722
+final_val_teacher_loss=0.168379
+final_val_teacher_iou=0.785686
