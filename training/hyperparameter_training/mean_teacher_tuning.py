@@ -189,15 +189,15 @@ def main():
     batch_size_val = 8
     num_workers = 2
 
-    epochs = 15
-    freeze_epochs = 5
+    epochs = 25
+    freeze_epochs = 0
     lr_phase1 = 1e-3
     lr_phase2 = 5e-4
     ema_decay = 0.99
 
-    unsup_weight_max = 0.1
-    rampup_epochs = 12
-    confidence_threshold = 0.8
+    unsup_weight_max = 0.2
+    rampup_epochs = 8
+    confidence_threshold = 0.7
 
     bce_weight = 0.3
     dice_weight = 0.7
