@@ -88,17 +88,17 @@ def train():
     csv_path = "data/classification_dataset/ISIC2018_Task3_Training_GroundTruth.csv"
     unet_checkpoint_path = "runs/exp_first/best.pt"
 
-    save_dir = "results/classifier_exp_2"
+    save_dir = "results/classifier_exp_5"
     os.makedirs(save_dir, exist_ok=True)
 
     log_path = os.path.join(save_dir, "train_log.csv")
 
     batch_size = 16
-    epochs = 20
-    freeze_epochs = 10
+    epochs = 25
+    freeze_epochs = 7
 
     lr_head = 1e-3
-    lr_finetune = 1e-6
+    lr_finetune = 5e-6
     val_ratio = 0.2
 
     transform = transforms.Compose([
