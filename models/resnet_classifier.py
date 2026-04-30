@@ -21,7 +21,7 @@ class ResNet34ClassifierFromUNet(nn.Module):
 
         # Klassifikationskopf
         self.classifier = nn.Sequential(
-            nn.Dropout(p=0.5),
+            nn.Dropout(p=0.3),
             nn.Linear(512, num_classes))
 
     def forward(self, x):
