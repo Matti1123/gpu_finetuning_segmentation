@@ -12,6 +12,7 @@ venv/
 data/raw/
 data/processed/
 data/classification_dataset/
+data/testing/
 
 # runs / Checkpoints
 runs/
