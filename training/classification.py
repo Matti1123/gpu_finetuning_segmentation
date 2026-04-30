@@ -1,9 +1,8 @@
-# training/train_classifier_from_unet_encoder.py
+# training/classification.py
 
 import os
 import csv
 
-from timm.models import checkpoint
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, random_split
@@ -37,10 +36,7 @@ def validate(model, val_loader, criterion, device):
         correct += (preds == labels).sum().item()
         total += labels.size(0)
 
-    avg_loss = val_loss / len(val_loader)
-    accuracy = correct / total
-
-    return avg_loss, accuracy
+    return val_loss / len(val_loader), correct / total
 
 
 def save_plots(log_path, save_dir):
@@ -81,6 +77,7 @@ def save_plots(log_path, save_dir):
     plt.savefig(os.path.join(save_dir, "loss_plot.png"), dpi=300)
     plt.close()
 
+
 def train():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -88,7 +85,7 @@ def train():
     csv_path = "data/classification_dataset/ISIC2018_Task3_Training_GroundTruth.csv"
     unet_checkpoint_path = "runs/exp_first/best.pt"
 
-    save_dir = "results/classifier_exp_5"
+    save_dir = "results/classifier_exp_6"
     os.makedirs(save_dir, exist_ok=True)
 
     log_path = os.path.join(save_dir, "train_log.csv")
@@ -101,7 +98,25 @@ def train():
     lr_finetune = 5e-6
     val_ratio = 0.2
 
-    transform = transforms.Compose([
+    train_transform = transforms.Compose([
+        transforms.Resize((256, 256)),
+        transforms.RandomHorizontalFlip(p=0.5),
+        transforms.RandomVerticalFlip(p=0.5),
+        transforms.RandomRotation(degrees=20),
+        transforms.ColorJitter(
+            brightness=0.2,
+            contrast=0.2,
+            saturation=0.2,
+            hue=0.05
+        ),
+        transforms.ToTensor(),
+        transforms.Normalize(
+            mean=[0.485, 0.456, 0.406],
+            std=[0.229, 0.224, 0.225]
+        )
+    ])
+
+    val_transform = transforms.Compose([
         transforms.Resize((256, 256)),
         transforms.ToTensor(),
         transforms.Normalize(
@@ -110,20 +125,35 @@ def train():
         )
     ])
 
-    dataset = ISICClassificationDataset(
+    full_dataset = ISICClassificationDataset(
         image_dir=image_dir,
         csv_path=csv_path,
-        transform=transform
+        transform=None
     )
 
-    val_size = int(len(dataset) * val_ratio)
-    train_size = len(dataset) - val_size
+    val_size = int(len(full_dataset) * val_ratio)
+    train_size = len(full_dataset) - val_size
 
-    train_dataset, val_dataset = random_split(
-        dataset,
+    train_subset, val_subset = random_split(
+        full_dataset,
         [train_size, val_size],
         generator=torch.Generator().manual_seed(42)
     )
+
+    train_dataset = ISICClassificationDataset(
+        image_dir=image_dir,
+        csv_path=csv_path,
+        transform=train_transform
+    )
+
+    val_dataset = ISICClassificationDataset(
+        image_dir=image_dir,
+        csv_path=csv_path,
+        transform=val_transform
+    )
+
+    train_dataset.samples = [full_dataset.samples[i] for i in train_subset.indices]
+    val_dataset.samples = [full_dataset.samples[i] for i in val_subset.indices]
 
     train_loader = DataLoader(
         train_dataset,
@@ -140,7 +170,7 @@ def train():
         num_workers=2,
         pin_memory=True
     )
-    # U-Net bauen
+
     unet = build_unet_resnet34()
     checkpoint = torch.load(unet_checkpoint_path, map_location=device)
 
