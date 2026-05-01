@@ -88,7 +88,7 @@ def main():
     batch_size = 8
     val_ratio = 0.2
     num_workers = 2
-    epochs = 15
+    epochs = 25
 
     freeze_epochs = 7
     lr_phase1 = 1e-3
@@ -96,6 +96,7 @@ def main():
 
     bce_weight = 0.3
     dice_weight = 0.7
+    
 
     encoder_weights = "imagenet"
 

@@ -13,12 +13,14 @@ def evaluate():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # Pfade
-    image_dir = "data/classification_dataset/ISIC2018_Task3_Training_Input"
-    csv_path = "data/classification_dataset/ISIC2018_Task3_Training_GroundTruth.csv"
+    image_dir = "data/testing/ISIC2018_Task3_Test_Input"
+    csv_path = "data/testing/ISIC2018_Task3_Test_GroundTruth/ISIC2018_Task3_Test_GroundTruth.csv"
     model_path = "results/classifier_exp_6/best_classifier.pt"
     unet_checkpoint_path = "runs/exp_first/best.pt"
 
     batch_size = 16
+
+
 
     # KEINE Augmentation!
     transform = transforms.Compose([
