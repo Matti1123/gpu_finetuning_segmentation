@@ -1,0 +1,6 @@
+best_epoch=25
+best_val_iou=0.824760
+final_train_loss=0.047544
+final_val_loss=0.129943
+final_train_iou=0.917227
+final_val_iou=0.824760
