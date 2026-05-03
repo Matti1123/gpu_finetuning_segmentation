@@ -17,7 +17,7 @@ from models.U_net_resnet34 import build_unet_resnet34
 # Paths anpassen falls nötig
 # =========================
 
-MODEL_PATH = "results/supervised_training/run_20260421_174544_lr1e3_to_2e4_freeze7/best_model.pth"
+MODEL_PATH = "results/supervised_training/run_20260501_190729_lr1e3_to_2e4_freeze7/best_model.pth"
 
 TEST_IMAGE_DIR = "data/testing/ISIC2018_Task1-2_Test_Input"
 TEST_MASK_DIR = "data/testing/ISIC2018_Task1_Test_GroundTruth"

@@ -191,16 +191,19 @@ def main():
 
     epochs = 25
     freeze_epochs = 0
-    lr_phase1 = 1e-3
-    lr_phase2 = 5e-4
-    ema_decay = 0.995
+    lr_phase1 = 0.0001
+    lr_phase2 = 0.0001
+    ema_decay = 0.99
 
     unsup_weight_max = 0.15
-    rampup_epochs = 8
-    confidence_threshold = 0.75
+    rampup_epochs = 12
+    confidence_threshold = 0.8
 
     bce_weight = 0.3
     dice_weight = 0.7
+
+
+
 
     encoder_weights = "imagenet"
 
