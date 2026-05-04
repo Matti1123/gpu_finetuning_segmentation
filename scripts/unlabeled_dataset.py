@@ -9,6 +9,9 @@ class ISICUnlabeledDataset(Dataset):
         """
         Unlabeled Dataset für Mean Teacher.
         Gibt zwei Augmentierungen desselben Bildes zurück.
+
+        Keine geometrischen Augmentierungen:
+        image_weak und image_strong bleiben räumlich deckungsgleich.
         """
         self.images_dir = images_dir
         self.img_size = img_size
@@ -21,20 +24,29 @@ class ISICUnlabeledDataset(Dataset):
                 if f.endswith(".jpg")
             ])
 
+        # Teacher input: schwache / neutrale Augmentierung
         self.weak_transform = transforms.Compose([
             transforms.Resize(self.img_size),
             transforms.ToTensor(),
         ])
 
+        # Student input: stärkere photometrische Augmentierung
+        # Keine Rotation, kein Flip, kein Crop, kein Affine
         self.strong_transform = transforms.Compose([
             transforms.Resize(self.img_size),
+
             transforms.ColorJitter(
-                brightness=0.15,
-                contrast=0.15,
-                saturation=0.15,
-                hue=0.02
+                brightness=0.40,
+                contrast=0.40,
+                saturation=0.30,
+                hue=0.05
             ),
-            transforms.GaussianBlur(kernel_size=3),
+
+            transforms.GaussianBlur(
+                kernel_size=5,
+                sigma=(0.1, 1.5)
+            ),
+
             transforms.ToTensor(),
         ])
 
