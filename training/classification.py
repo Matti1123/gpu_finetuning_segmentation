@@ -83,7 +83,7 @@ def train():
 
     image_dir = "data/classification_dataset/ISIC2018_Task3_Training_Input"
     csv_path = "data/classification_dataset/ISIC2018_Task3_Training_GroundTruth.csv"
-    unet_checkpoint_path = "runs/exp_first/best.pt"
+    unet_checkpoint_path = "results/supervised_training/run_20260501_190729_lr1e3_to_2e4_freeze7/best_model.pth"
 
     save_dir = "results/classifier_exp_7"
     os.makedirs(save_dir, exist_ok=True)
@@ -174,7 +174,9 @@ def train():
     unet = build_unet_resnet34()
     checkpoint = torch.load(unet_checkpoint_path, map_location=device)
 
-    if "model_state" in checkpoint:
+    if "model_state_dict" in checkpoint:
+        unet.load_state_dict(checkpoint["model_state_dict"])
+    elif "model_state" in checkpoint:
         unet.load_state_dict(checkpoint["model_state"])
     else:
         unet.load_state_dict(checkpoint)
