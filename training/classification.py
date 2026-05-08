@@ -83,7 +83,7 @@ def train():
 
     image_dir = "data/classification_dataset/ISIC2018_Task3_Training_Input"
     csv_path = "data/classification_dataset/ISIC2018_Task3_Training_GroundTruth.csv"
-    unet_checkpoint_path = "results/supervised_training/run_20260501_190729_lr1e3_to_2e4_freeze7/best_model.pth"
+    unet_checkpoint_path = "runs/exp_first/best.pt"
 
     save_dir = "results/classifier_exp_7"
     os.makedirs(save_dir, exist_ok=True)

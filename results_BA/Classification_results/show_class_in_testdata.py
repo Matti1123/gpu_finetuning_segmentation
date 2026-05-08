@@ -19,11 +19,11 @@ MODEL_PATH = "results/classifier_exp_7/best_classifier.pt"
 UNET_CHECKPOINT_PATH = "runs/exp_first/best.pt"
 TEST_IMAGE_DIR = "data/testing/ISIC2018_Task1-2_Test_Input"
 
-OUTPUT_CSV = "results_BA/Classification_results/test_class_predictions.csv"
+OUTPUT_CSV = "results_BA/Classification_results/test_class_predictions_0.75.csv"
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-THRESHOLD = 0.9
+THRESHOLD = 0.75
 BATCH_SIZE = 16
 
 CLASS_NAMES = [
@@ -124,7 +124,7 @@ def main():
                     "image_path": paths[i],
                     "predicted_class": pred_class,
                     "probability": max_prob,
-                    "above_0_9": above_threshold
+                    "above_0_75": above_threshold
                 }
 
                 for class_idx, class_name in enumerate(CLASS_NAMES):
@@ -141,12 +141,12 @@ def main():
     for class_name in CLASS_NAMES:
         print(f"{class_name}: {counter_all[class_name]}")
 
-    print("\nNur Testbilder mit Softmax-Wahrscheinlichkeit >= 0.9:")
+    print("\nNur Testbilder mit Softmax-Wahrscheinlichkeit >= 0.75:")
     for class_name in CLASS_NAMES:
         print(f"{class_name}: {counter_above_threshold[class_name]}")
 
     print(f"\nGesamtanzahl Testbilder: {len(dataset)}")
-    print(f"Bilder >= 0.9: {sum(counter_above_threshold.values())}")
+    print(f"Bilder >= 0.75: {sum(counter_above_threshold.values())}")
     print(f"CSV gespeichert unter: {OUTPUT_CSV}")
 
 
