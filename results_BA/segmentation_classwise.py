@@ -1,6 +1,5 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
 import os
 
 # =====================================================
@@ -25,7 +24,6 @@ os.makedirs(output_dir, exist_ok=True)
 
 df_sl = pd.read_csv(sl_iou_csv)
 df_ssl = pd.read_csv(ssl_iou_csv)
-
 df_class = pd.read_csv(class_csv)
 
 # =====================================================
@@ -34,7 +32,6 @@ df_class = pd.read_csv(class_csv)
 
 df_sl["filename"] = df_sl["image"].apply(os.path.basename)
 df_ssl["filename"] = df_ssl["image"].apply(os.path.basename)
-
 df_class["filename"] = df_class["image_path"].apply(os.path.basename)
 
 # =====================================================
@@ -65,7 +62,7 @@ df_ssl = pd.merge(
 # Klassen auswählen
 # =====================================================
 
-valid_classes = ["NV", "MEL", "BKL", "BCC","AKIEC"]
+valid_classes = ["NV", "MEL", "BKL", "BCC", "AKIEC"]
 
 df_sl = df_sl[df_sl["predicted_class"].isin(valid_classes)]
 df_ssl = df_ssl[df_ssl["predicted_class"].isin(valid_classes)]
@@ -83,104 +80,84 @@ sl_mean = [sl_stats[c] if c in sl_stats.index else 0 for c in classes]
 ssl_mean = [ssl_stats[c] if c in ssl_stats.index else 0 for c in classes]
 
 # =====================================================
-# Style
+# Style für BA-Subplots
 # =====================================================
 
 plt.rcParams.update({
-    "font.size": 12,
-    "axes.titlesize": 20,
+    "font.size": 18,
+    "axes.titlesize": 22,
     "axes.titleweight": "normal",
-    "axes.labelsize": 14,
-    "legend.fontsize": 12,
-    "xtick.labelsize": 11,
-    "ytick.labelsize": 11,
+    "axes.labelsize": 20,
+    "xtick.labelsize": 18,
+    "ytick.labelsize": 18,
 })
+
+# =====================================================
+# Plot-Funktion
+# =====================================================
+
+def save_classwise_plot(values, color, title, filename_base):
+    plt.figure(figsize=(10, 6))
+
+    bars = plt.bar(
+        classes,
+        values,
+        color=color,
+        edgecolor="black",
+        linewidth=1.2
+    )
+
+    for bar, value in zip(bars, values):
+        plt.text(
+            bar.get_x() + bar.get_width() / 2,
+            value + 0.015,
+            f"{value:.2f}",
+            ha="center",
+            va="bottom",
+            fontsize=17
+        )
+
+    plt.ylabel("Mean IoU")
+    plt.xlabel("Vorhergesagte Läsionsklasse")
+    plt.title(title, fontsize=24)
+
+    plt.ylim(0, 1.0)
+    plt.grid(True, axis="y", linestyle="--", alpha=0.5)
+
+    plt.tight_layout()
+
+    png_path = os.path.join(output_dir, filename_base + ".png")
+    eps_path = os.path.join(output_dir, filename_base + ".eps")
+
+    plt.savefig(png_path, dpi=300, bbox_inches="tight")
+    plt.savefig(eps_path, format="eps", bbox_inches="tight")
+
+    plt.close()
+
+    print(f"Gespeichert: {png_path}")
+    print(f"Gespeichert: {eps_path}")
 
 # =====================================================
 # SL Plot
 # =====================================================
 
-plt.figure(figsize=(10, 6))
-
-bars = plt.bar(
-    classes,
-    sl_mean,
+save_classwise_plot(
+    values=sl_mean,
     color="blue",
-    edgecolor="black",
-    linewidth=1.0
+    title="Segmentierungsleistung nach Läsionsklasse (SL)",
+    filename_base="classwise_iou_sl"
 )
-
-for bar, value in zip(bars, sl_mean):
-    plt.text(
-        bar.get_x() + bar.get_width() / 2,
-        value + 0.01,
-        f"{value:.2f}",
-        ha='center',
-        va='bottom',
-        fontsize=11
-    )
-
-plt.ylabel("Mean IoU")
-plt.xlabel("Vorhergesagte Läsionsklasse")
-
-plt.title("Segmentierungsleistung nach Läsionsklasse (SL)")
-
-plt.ylim(0, 1.0)
-
-plt.grid(True, axis="y", linestyle="--", alpha=0.5)
-
-plt.tight_layout()
-
-png_path = os.path.join(output_dir, "classwise_iou_sl.png")
-eps_path = os.path.join(output_dir, "classwise_iou_sl.eps")
-
-plt.savefig(png_path, dpi=300, bbox_inches="tight")
-plt.savefig(eps_path, format="eps", bbox_inches="tight")
-
-plt.close()
 
 # =====================================================
 # SSL Plot
 # =====================================================
 
-plt.figure(figsize=(10, 6))
-
-bars = plt.bar(
-    classes,
-    ssl_mean,
+save_classwise_plot(
+    values=ssl_mean,
     color="orange",
-    edgecolor="black",
-    linewidth=1.0
+    title="Segmentierungsleistung nach Läsionsklasse (SSL)",
+    filename_base="classwise_iou_ssl"
 )
-
-for bar, value in zip(bars, ssl_mean):
-    plt.text(
-        bar.get_x() + bar.get_width() / 2,
-        value + 0.01,
-        f"{value:.2f}",
-        ha='center',
-        va='bottom',
-        fontsize=11
-    )
-
-plt.ylabel("Mean IoU")
-plt.xlabel("Vorhergesagte Läsionsklasse")
-
-plt.title("Segmentierungsleistung nach Läsionsklasse (SSL)")
-
-plt.ylim(0, 1.0)
-
-plt.grid(True, axis="y", linestyle="--", alpha=0.5)
-
-plt.tight_layout()
-
-png_path = os.path.join(output_dir, "classwise_iou_ssl.png")
-eps_path = os.path.join(output_dir, "classwise_iou_ssl.eps")
-
-plt.savefig(png_path, dpi=300, bbox_inches="tight")
-plt.savefig(eps_path, format="eps", bbox_inches="tight")
-
-plt.close()
 
 # =====================================================
 # Terminal Output
