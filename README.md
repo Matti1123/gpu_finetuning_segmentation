@@ -41,6 +41,11 @@ bachelorarbeit_segmentierung/
 └── README.md
 ```
 
+The directories `data/`, `runs/`, and parts of `results/` are not fully included in this repository due to storage limitations. In particular, trained model checkpoints, intermediate experiment outputs, and the complete ISIC datasets were excluded because of their large file sizes.
+
+Only selected figures, evaluation outputs, and scripts required to reproduce the implementation and training pipeline are provided.
+```
+
 ---
 
 # Dataset
@@ -244,15 +249,6 @@ python -m training.train_mean_teacher
 ```
 
 ---
-
-# Evaluation
-
-```bash
-python -m testing.evaluate
-```
-
----
-
 # Thesis
 
 The complete bachelor thesis associated with this repository discusses:
