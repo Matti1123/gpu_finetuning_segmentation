@@ -160,7 +160,7 @@ The classification model:
 - Uses a ResNet34 backbone
 - Was trained on ISIC 2018 Task 3
 - Achieved:
-  - Accuracy: 0.828
+  - Accuracy: 0.829
   - Balanced Accuracy: 0.660
 
 The generated pseudo-class labels were used for class-wise segmentation analysis.
