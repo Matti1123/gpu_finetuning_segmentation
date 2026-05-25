@@ -44,7 +44,6 @@ bachelorarbeit_segmentierung/
 The directories `data/`, `runs/`, and parts of `results/` are not fully included in this repository due to storage limitations. In particular, trained model checkpoints, intermediate experiment outputs, and the complete ISIC datasets were excluded because of their large file sizes.
 
 Only selected figures, evaluation outputs, and scripts required to reproduce the implementation and training pipeline are provided.
-```
 
 ---
 
