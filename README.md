@@ -285,19 +285,6 @@ The ISIC dataset is distributed under the Creative Commons CC0 1.0 license.
 
 ---
 
-# Citation
-
-If you use this repository or parts of the implementation, please cite the associated bachelor thesis.
-
-```bibtex
-@misc{fletschinger2026,
-  author = {Matti Fletschinger},
-  title = {Semi-Supervised Learning for Dermatological Image Segmentation},
-  year = {2026}
-}
-```
-
----
 
 # Author
 
