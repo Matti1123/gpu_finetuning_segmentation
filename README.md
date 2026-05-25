@@ -235,18 +235,27 @@ pip install -r requirements.txt
 
 # Training
 
+The final supervised and semi-supervised models presented in the thesis were generated using the hyperparameter tuning scripts located in:
+
+```text
+training/hyperparameter_training/
+├── supervised_tuning.py
+└── mean_teacher_tuning.py
+```
+
+These scripts were used to perform multiple experimental runs with different hyperparameter configurations in order to identify the best-performing models.
+
 ## Supervised Learning
 
 ```bash
-python -m training.train_supervised
+python -m training.hyperparameter_training.supervised_tuning
 ```
 
 ## Semi-Supervised Learning
 
 ```bash
-python -m training.train_mean_teacher
+python -m training.hyperparameter_training.mean_teacher_tuning
 ```
-
 ---
 # Thesis
 
