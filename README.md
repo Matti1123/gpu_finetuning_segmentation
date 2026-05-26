@@ -299,5 +299,5 @@ The ISIC dataset is distributed under the Creative Commons CC0 1.0 license.
 # Author
 
 Matti Fletschinger  
-Bachelor Thesis – Medical and Sports Technology  
+Bachelor Thesis – Medical, Health and Sports Technology  
 MCI Innsbruck
