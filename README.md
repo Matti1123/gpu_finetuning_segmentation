@@ -52,6 +52,7 @@ Only selected figures, evaluation outputs, and scripts required to reproduce the
 The experiments are based on:
 
 - **ISIC 2018 Challenge – Task 1: Lesion Boundary Segmentation**
+- **ISIC 2018 Challenge – Task 3: Disease Classification**
 
 The dataset contains dermoscopic images of skin lesions together with corresponding binary segmentation masks.
 
@@ -64,7 +65,7 @@ The segmentation masks are binary PNG images:
 - Background = 0
 - Lesion = 255
 
-The dataset includes multiple lesion types such as:
+The Classification dataset includes multiple lesion types such as:
 
 - Melanoma
 - Melanocytic nevi
